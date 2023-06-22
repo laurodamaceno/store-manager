@@ -4,7 +4,7 @@
         private $serverName = "localhost";
         private $database = "store_manager";
         private $uid = "SA";
-        private $pwd = "your-pass-word-here";
+        private $pwd = "910531#lci";
         private $connection;
 
         public function __construct() {

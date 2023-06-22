@@ -23,7 +23,7 @@
             try {
                 $db = new Database();
 
-                $sql = "SELECT * FROM product_types WHERE id = :id";
+                $sql = is_numeric($id) ?  "SELECT * FROM product_types WHERE id = :id" : "SELECT * FROM product_types WHERE slug = :id" ;
                 $stmt = $db->getConnection()->prepare($sql);
 
                 $stmt->bindParam(':id', $id);

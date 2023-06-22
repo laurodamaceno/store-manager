@@ -2,6 +2,7 @@
 
     require_once '../src/connection.php';
     require_once '../src/middleware-auth.php';
+    require_once '../src/slug-generator.php';
     
     class CreateProductTypeController
     {
@@ -22,6 +23,8 @@
             $data = json_decode(file_get_contents('php://input'), true);
 
             $title = $data['title'];
+            $slug = SlugGenerator::generateSlug($title);
+            $tax = $data['tax'];
             $description = $data['description'];
 
             $middlewareAuth = new MiddlewareAuth();
@@ -40,13 +43,21 @@
                         'success' => false,
                         'message' => 'Title is required.'
                     ];
+                } elseif ($tax === '' || $tax === '' <= 0) {
+                    http_response_code(401);
+                    $response = [
+                        'success' => false,
+                        'message' => 'Tax is required.'
+                    ];
                 } else {
                     try {
         
-                        $sql = "INSERT INTO product_types (title, description) VALUES (:title, :description)";
+                        $sql = "INSERT INTO product_types (title, slug, tax, description) VALUES (:title, :slug, :tax, :description)";
                         $stmt = $db->getConnection()->prepare($sql);
         
                         $stmt->bindParam(':title', $title);
+                        $stmt->bindParam(':slug', $slug);
+                        $stmt->bindParam(':tax', $tax);
                         $stmt->bindParam(':description', $description);
         
                         $stmt->execute();

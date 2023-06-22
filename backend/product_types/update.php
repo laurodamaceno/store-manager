@@ -2,6 +2,7 @@
 
     require_once '../src/connection.php';
     require_once '../src/middleware-auth.php';
+    require_once '../src/slug-generator.php';
 
     class UpdateProductTypeController
     {
@@ -27,6 +28,8 @@
             $data = json_decode(file_get_contents('php://input'), true);
 
             $title = $data['title'];
+            $slug = SlugGenerator::generateSlug($title);
+            $tax = $data['tax'];
             $description = $data['description'];
 
             $middlewareAuth = new MiddlewareAuth();
@@ -51,6 +54,12 @@
                         'success' => false,
                         'message' => 'Title is required.',
                     ];
+                } elseif ($tax === '' || $tax === '' <= 0) {
+                    http_response_code(401);
+                    $response = [
+                        'success' => false,
+                        'message' => 'Tax is required.'
+                    ];
                 } else {
                     try {
 
@@ -61,10 +70,12 @@
                         $stmt0->execute();
 
                         if ($stmt0->rowCount() != 0) {
-                            $sql = "UPDATE product_types SET title = :title, description = :description WHERE id = :id";
+                            $sql = "UPDATE product_types SET title = :title, slug = :slug, tax = :tax, description = :description WHERE id = :id";
                             $stmt = $db->getConnection()->prepare($sql);
 
                             $stmt->bindParam(':title', $title);
+                            $stmt->bindParam(':slug', $slug);
+                            $stmt->bindParam(':tax', $tax);
                             $stmt->bindParam(':description', $description);
                             $stmt->bindParam(':id', $id);
                             $stmt->execute();

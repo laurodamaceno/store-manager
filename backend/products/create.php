@@ -29,7 +29,6 @@
             $price = $data['price'];
             $stock_qty = $data['stock_qty'];
             $type = $data['type'];
-            $tax = $data['tax'];
 
             $middlewareAuth = new MiddlewareAuth();
             $validating_session = $middlewareAuth->validateSession($db);
@@ -65,17 +64,11 @@
                         'success' => false,
                         'message' => 'Product type is invalid.'
                     ];
-                } elseif ($tax === '') {
-                    http_response_code(401);
-                    $response = [
-                        'success' => false,
-                        'message' => 'Product tax is invalid.'
-                    ];
                 } else {
                     try {
                         $user = $validating_session;
         
-                        $sql = "INSERT INTO products (title, image, slug, description, price, stock_qty, type, tax, author) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)";
+                        $sql = "INSERT INTO products (title, image, slug, description, price, stock_qty, type, author) VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
                         $stmt = $db->getConnection()->prepare($sql);
         
                         $stmt->bindParam( 1, $title);
@@ -85,7 +78,6 @@
                         $stmt->bindParam( 5, $price);
                         $stmt->bindParam( 6, $stock_qty);
                         $stmt->bindParam( 7, $type);
-                        $stmt->bindParam( 8, $tax);
                         $stmt->bindParam( 9, $user);
         
                         $stmt->execute();
