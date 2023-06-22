@@ -11,11 +11,11 @@ For the construction of the Rest API, I have chosen to use only PHP with PDO and
 
 Remember to update the connection file with the DB, located at `./backend/src/` with the name `connection.php`.
 
-```php
-private $serverName = "localhost";
-private $database = "store_manager";
-private $uid = "SA";
-private $pwd = "your-pass-word-here";```
+    php
+    private $serverName = "localhost";
+    private $database = "store_manager";
+    private $uid = "SA";
+    private $pwd = "your-pass-word-here";
 
 Please provide the details of your local server for it to function correctly.
 
